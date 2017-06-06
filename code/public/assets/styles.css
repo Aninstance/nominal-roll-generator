@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css?family=Cutive+Mono');
+
+body {
+    /*background: #0d1521 url("S.A.S_emblem.png") no-repeat center;*/
+    background: #0d1521;
+    font-family: 'Cutive Mono', monospace;
+    font-size: 20px;
+    color: #989898;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.5em;
+    margin: 1.5em;
+    text-transform: capitalize;
+}
+
+h2 {
+    text-align: center;
+    font-size: 1.5em;
+    margin: 1em;
+    text-transform: capitalize;
+}
+
+h3 {
+    font-size: 1.2em;
+    margin: 1em;
+    text-transform: capitalize;
+}
+
+hr {
+    width: 75%;
+    margin: 1em auto;
+}
+
+a {
+    color: cornflowerblue;
+    background-color: #090d13;
+}
+
+a:hover {
+    color: white;
+    background-color: #090d13;
+}
+
+a:active {
+    color: silver;
+    background-color: #090d13;
+}
+
+a#back-to-top {
+    padding: 1em;
+    display: block;
+    text-align: right;
+    background-color: #23282e;
+}
+
+div.roll-form, div.military-unit-form {
+    display: block;
+    position: relative;
+    background: #090d13;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+div.roll-form form:after, div.military-unit-form form:after {
+    margin: 0;
+    content: '';
+    display: block;
+    clear: both;
+}
+
+/* FORM */
+
+input {
+    margin: 0 0 1em 0;
+}
+
+div.error, div.recordError {
+    color: red;
+    margin: 0 0 1em 0;
+}
+
+input[type=text] {
+    width: 70%;
+    padding: 20px;
+    background: #181c22;
+    border: 0;
+    font-size: 1em;
+    color: #fff;
+    font-family: 'Cutive Mono', monospace;
+}
+
+input[type=checkbox] {
+    background: #181c22;
+    border: 0;
+    transform: scale(2) !important;
+}
+
+div#nodate {
+  font-size: 0.8em;
+}
+
+div#nodate input[type=checkbox]{
+  background: #181c22;
+    border: 0;
+    transform: scale(1.2) !important;
+}
+
+select#soldier_units_select {
+    background: #181c22;
+    padding: 1em;
+    color: #fff;
+    font-family: 'Cutive Mono', monospace;
+    font-size: 1em;
+    margin-bottom: 1em;
+    min-height: 15em;
+    width: 100%;
+}
+
+select#kia {
+    background: #181c22;
+    padding: 1em;
+    color: #fff;
+    font-family: 'Cutive Mono', monospace;
+    font-size: 1em;
+    margin-bottom: 1em;
+    width: 17%;
+}
+
+label {
+    display: inline-block;
+    width: 15em;
+    vertical-align: middle;
+}
+
+input[type=submit], input[type=button] {
+    padding: 1em;
+    background: #23282e;
+    border: 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Cutive Mono', monospace;
+    font-size: 1em;
+    width: 60%;
+    float: right;
+    margin: 0 1em 1em 1em;
+}
+
+div#pdf-button-div button[type=submit] {
+    display: block;
+    padding: 1em;
+    background: #181c22;
+    border: 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Cutive Mono', monospace;
+    font-size: 1em;
+    width: 50%;
+    margin: 1em 0 0 1em;
+}
+
+small.form-help {
+    font-size: 0.8em;
+    display: block;
+    margin: 0.8em 0 0.8em 0;
+}
+
+/* DATA LIST */
+
+/*ul {*/
+/*list-style-type: none;*/
+/*padding: 0;*/
+/*margin: 0;*/
+/*}*/
+
+/*li {*/
+/*width: 100%;*/
+/*padding: 1em;*/
+/*box-sizing: border-box;*/
+/*cursor: pointer;*/
+/*letter-spacing: 1px;*/
+/*}*/
+
+/*li:hover {*/
+/*text-decoration: line-through;*/
+/*background: rgba(0, 0, 0, 0.2);*/
+/*}*/
+
+div#record-display, div#500-error-page {
+    display: block;
+    position: relative;
+    float: left;
+    margin: 1em 0 0 0;
+    background: #23282e;
+    width: 100%;
+}
+
+div#record {
+    box-sizing: border-box;
+    padding: 1em;
+    width: 100%;
+    letter-spacing: 1px;
+}
+
+div#record ul.record-list {
+    cursor: pointer;
+    display: block;
+    margin: 0 1em 1em 1em;
+}
+
+div#record li.record_soldier_name:hover,
+div#record li.record_soldier_unit:hover {
+    text-decoration: line-through;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+div#record li.edit_record {
+    color: red;
+}
+
+div#record li.add_unit:hover {
+    text-decoration: underline;
+}
+
+div#docs {
+    display: none; /* none as default */
+    margin: 0 0 1em 0;
+}
+
+div#docs li {
+    padding: 0.5em 0;
+}
+
+div#footer {
+    display: block;
+    float: none;
+    clear: both;
+    margin: 1em 0 0 0;
+    font-size: 0.9em;
+    padding: 1em;
+}
+
+div#footer div#copyright-notice {
+    text-align: center;
+}
+
+/* DESKTOP OVERRIDES */
+@media only screen and (min-width: 1920px) {
+    div.roll-form, div.military-unit-form {
+        display: block;
+        float: left;
+        position: relative;
+        width: 50%;
+        background: #090d13;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    h2 {
+        margin: 1em 0 0 0;
+    }
+
+    input[type=submit] input[type=button] {
+        width: 30%;
+        margin: 0 1em 1em 1em;
+    }
+
+    div#record-display {
+        display: block;
+        position: relative;
+        float: left;
+        margin: 0 1em 0 0;
+        width: 45%;
+    }
+
+    div#footer div#dev-info {
+        max-width: 1024px;
+    }
+
+}
