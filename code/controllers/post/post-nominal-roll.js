@@ -88,7 +88,6 @@ const Response = function(req, res, next) {
           // if nodate was checked, sanitize unit names to remove date element
           req.sanitize('soldier_units').remove_unit_dates_formatter();
         }
-        console.log(req.body.soldier_units)
         buildQ = buildQuery(req.body, 'UNITS');
         q = buildQ[0];
         q.exec(function(err, data) {
@@ -175,8 +174,8 @@ const Response = function(req, res, next) {
         regex = regex.charAt(regex.length - 1) == '|' ? regex.substr(0, regex.length - 1) : regex;
         // define query
         Query.soldier_units = {
-            $regex: regex,
-            $options: 'i'
+          $regex: regex,
+          $options: 'i'
         };
       } else {
         // define query
@@ -188,7 +187,16 @@ const Response = function(req, res, next) {
         Query.kia = 'K'; //if kia, produce Roll of Honour. Else, ALL kia status for nominal roll
       }
     }
-    return [NominalRollModels.SoldierRecords.find(Query), unitsToPresent];
+    return [
+      NominalRollModels.SoldierRecords.find(
+        Query, null, {
+          sort: {
+            soldier_surname: 1,
+            solider_serial_number: 1,
+          }
+        }),
+      unitsToPresent
+    ];
   }
 };
 
