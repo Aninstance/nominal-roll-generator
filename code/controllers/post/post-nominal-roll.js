@@ -167,6 +167,7 @@ const Response = function(req, res, next) {
       unitsToPresent = postData.soldier_units.filter(u => u !== 'Unspecified');
       // define rest of query
       if (postData.nodate) {
+        // if nodate checked, select strings ignoring the date portion
         let regex = ``;
         unitsToPresent.forEach(function(u) {
           regex += `^.*${u}.*$|`;

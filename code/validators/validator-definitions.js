@@ -1,5 +1,6 @@
 /* Validator definitions for expressValidator. Called in index.js. */
-XRegExp = require('xregexp');
+const XRegExp = require('xregexp');
+const helpers = require('../controllers/helpers/aninstance-helpers');
 
 module.exports = {
   customValidators: {
@@ -103,43 +104,13 @@ module.exports = {
       if (value) {
         // format military unit input
         let unitArray = value.split(',').map(v => v.trim()); // create array of units & trim whitespace
-        return formatToDateAndString(unitArray);
+        return helpers.formatToDateAndString(unitArray);
       } else {
         return false;
       }
     },
     remove_unit_dates_formatter(value) {
-      return value ? removeDatesFromStrings(value) : false;
+      return value ? helpers.removeDatesFromStrings(value) : false;
     },
   }
 };
-
-function formatToDateAndString(unitArray) {
-  let formatted = [];
-  if (unitArray.length) {
-    // function to format array of ['1941|test1'] values to array of [Date, String] values
-    unitArray.forEach(function(u) {
-      let unitDateArray = u.split('+').map(i => i.trim()); // split array value strings seperated by pipe to a new array of 2 values e.g. ['1941', 'test']
-      let formattedValueHolder = [];
-      unitDateArray.forEach(function(i) {
-        // add value as a Date obj to first element of formattedValueHolder array
-        if (i.length === 4 && XRegExp.test(i, /^\d+$/)) {
-          formattedValueHolder[0] = (new Date(i));
-        }
-        if (i.length !== 4 || !XRegExp.test(i, /^\d+$/)) {
-          // if value was not valid date, but String, add to the 2nd element of formattedValueHolder array (i.e. the unit name)
-          formattedValueHolder[1] = (i);
-        }
-      });
-      formatted.push(formattedValueHolder);
-    });
-  }
-  return formatted.length ? formatted : false;
-}
-
-function removeDatesFromStrings(unitArray) {
-  if (unitArray.length) {
-    newArray = unitArray.map(e => e.replace(/[0-9]{4}|-{2}|\|/g, '').trim());
-  }
-  return newArray.length ? newArray : false;
-}
