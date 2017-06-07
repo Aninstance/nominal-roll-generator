@@ -5,6 +5,7 @@ module.exports = function(unitList, data, type) {
   // construct html
   let rollHtml = {};
   unitList.forEach(function(unit) {
+    let displayCounter = 0;
     rollHtml[unit[2]] = `<ul class="unit-record">`;
     data.forEach(function(record) {
       let recordSeen = [];
@@ -24,20 +25,30 @@ module.exports = function(unitList, data, type) {
             rollHtml[unit[2]] += `<li>Middle Names: ${middlenames}</li>`;
             rollHtml[unit[2]] += `<li>Killed In Action: ${kia}</li>`;
             rollHtml[unit[2]] += '</ul><hr>';
+            // only display 5 records per page  note: record.soldier_units[record.soldier_units.indexOf(u) + 1] === undefined
+            if (displayCounter > 4) {
+              rollHtml[unit[2]] += `<div style="page-break-after:always;"></div>`;
+              displayCounter = 0;
+            } else {
+              displayCounter += 1;
+            }
           }
         }
       });
     });
     rollHtml[unit[2]] += `</ul><hr>`;
   });
+
   let html = ``,
-    rollTitle = `sasoriginals-nominal-roll`,
+    rollTitle = `Aninstance-Nominal-Roll-Generator`,
     headerTitle = type === 'ROH' ? 'Roll of Honour' : 'Nominal Roll';
+
   let styles = {
     header: 'text-align:center;font-size:28px;font-weight:bold;font-family:monospace;',
     body: 'font-size:18px;font-family:monospace;',
-    h1: 'font-size:20px;text-align:center;margin:7px07px0;font-family:monospace;'
+    h1: 'font-size:20px;text-align:center;margin:7px07px0;font-family:monospace;',
   };
+
   let options = {
     format: 'A4',
     border: {
@@ -58,6 +69,7 @@ module.exports = function(unitList, data, type) {
     }
 
   };
+
   let filename = encodeURIComponent(rollTitle) + '.pdf';
   unitList.forEach(function(unit) {
     let yearSpan = unit[0] && unit[1] ? unit[0] !== unit[1] ? `(${unit[0]} - ${unit[1]})` : `${unit[0]}` : '';
@@ -90,6 +102,5 @@ function combineIdenticalUnits(unitList) {
     u[0] = u[0] !== undefined ? u[0].getFullYear() : null;
     u[1] = u[1] !== undefined ? u[1].getFullYear() : null;
   });
-
   return unitsToDisplay;
 }
