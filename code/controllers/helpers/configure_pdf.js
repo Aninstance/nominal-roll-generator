@@ -8,10 +8,10 @@ module.exports = function(unitList, data, type) {
     rollHtml[unit[2]] = `<ul class="unit-record">`;
     data.forEach(function(record) {
       let recordSeen = [];
-      // ensure iterated soldier isn't presented multiple times due to being present in multiple years for same unit
-      if (!recordSeen.includes(record._id)) {
-        recordSeen.push(record._id);
-        record.soldier_units.forEach(function(u) {
+      record.soldier_units.forEach(function(u) {
+        // ensure iterated soldier isn't presented multiple times due to being present in multiple years for same unit
+        if (!recordSeen.includes(record._id)) {
+          recordSeen.push(record._id);
           // if iterated soldier_unit contains text of iterated selected unit (which may have had date removed)
           if (u.includes(unit[2])) {
             rollHtml[unit[2]] += `<ul>`;
@@ -25,8 +25,8 @@ module.exports = function(unitList, data, type) {
             rollHtml[unit[2]] += `<li>Killed In Action: ${kia}</li>`;
             rollHtml[unit[2]] += '</ul><hr>';
           }
-        });
-      }
+        }
+      });
     });
     rollHtml[unit[2]] += `</ul><hr>`;
   });
