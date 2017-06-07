@@ -7,21 +7,26 @@ module.exports = function(unitList, data, type) {
   unitList.forEach(function(unit) {
     rollHtml[unit[2]] = `<ul class="unit-record">`;
     data.forEach(function(record) {
-      record.soldier_units.forEach(function(u) {
-        // if iterated soldier_unit contains text of iterated selected unit (which may have had date removed)
-        if (u.includes(unit[2])) {
-          rollHtml[unit[2]] += `<ul>`;
-          let kia = record.kia === 'K' ? 'Yes' : 'No';
-          let serial = record.soldier_serial_number ? record.soldier_serial_number : '';
-          let middlenames = record.soldier_middlenames.join(', ');
-          rollHtml[unit[2]] += `<li>Serial Number: ${serial}</li>`;
-          rollHtml[unit[2]] += `<li>Surname: ${record.soldier_surname}</li>`;
-          rollHtml[unit[2]] += `<li>First Name: ${record.soldier_firstname}</li>`;
-          rollHtml[unit[2]] += `<li>Middle Names: ${middlenames}</li>`;
-          rollHtml[unit[2]] += `<li>Killed In Action: ${kia}</li>`;
-          rollHtml[unit[2]] += '</ul><hr>';
-        }
-      });
+      let recordSeen = [];
+      // ensure iterated soldier isn't presented multiple times due to being present in multiple years for same unit
+      if (!recordSeen.includes(record._id)) {
+        recordSeen.push(record._id);
+        record.soldier_units.forEach(function(u) {
+          // if iterated soldier_unit contains text of iterated selected unit (which may have had date removed)
+          if (u.includes(unit[2])) {
+            rollHtml[unit[2]] += `<ul>`;
+            let kia = record.kia === 'K' ? 'Yes' : 'No';
+            let serial = record.soldier_serial_number ? record.soldier_serial_number : '';
+            let middlenames = record.soldier_middlenames.join(', ');
+            rollHtml[unit[2]] += `<li>Serial Number: ${serial}</li>`;
+            rollHtml[unit[2]] += `<li>Surname: ${record.soldier_surname}</li>`;
+            rollHtml[unit[2]] += `<li>First Name: ${record.soldier_firstname}</li>`;
+            rollHtml[unit[2]] += `<li>Middle Names: ${middlenames}</li>`;
+            rollHtml[unit[2]] += `<li>Killed In Action: ${kia}</li>`;
+            rollHtml[unit[2]] += '</ul><hr>';
+          }
+        });
+      }
     });
     rollHtml[unit[2]] += `</ul><hr>`;
   });
