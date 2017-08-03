@@ -1,0 +1,190 @@
+<html>
+
+<head>
+  <title>Personnel Database and Nominal Roll Generator</title>
+  <link href="/assets/styles.css" rel="stylesheet" type="text/css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+  <div id="main-body">
+    <h1>Personnel Database &amp; Nominal Roll Generator</h1>
+    <div class="recordError">
+      <%= recordError %>
+    </div>
+    <div class="roll-form">
+      <form id="main-form" action="/nominal-roll" method="post" target="_blank">
+        <div id="soldier_surname">
+          <div class="error"></div>
+          <label>Soldier Surname</label>
+          <input type="text" name="soldier_surname" placeholder="" value="<%= record.soldier_surname %>" />
+        </div>
+        <div id="soldier_firstname">
+          <div class="error"></div>
+          <label>Soldier First Name </label>
+          <input type="text" name="soldier_firstname" placeholder="" value="<%= record.soldier_firstname %>" />
+        </div>
+        <div id="soldier_middlenames">
+          <div class="error"></div>
+          <label>Soldier Middle Names</label>
+          <input type="text" name="soldier_middlenames" placeholder="Separate multiple by a comma" value="<%= record.soldier_middlenames %>" />
+        </div>
+        <div id="soldier_serial_number">
+          <div class="error"></div>
+          <label>Soldier Serial Number</label>
+          <input type="text" name="soldier_serial_number" placeholder="Separate multiple by a comma" value="<%= record.soldier_serial_number %>" />
+        </div>
+        <div id="soldier_units">
+          <div class="error"></div>
+          <label>Military Units</label>
+          <small class="form-help">If using mouse/keyboard, hold ctrl & left-click to select multiple.</small>
+          <select multiple id="soldier_units_select" name="soldier_units[]">
+                    <%- unitOptions %>
+                </select>
+        </div>
+        <div id="kia">
+          <label>Killed In Action</label>
+          <select id="kia" name="kia">
+                    <option value="S" <% if (record.kia === 'S'){ %>selected
+                            <% } %>
+                    >No
+                    </option>
+                    <option value="K" <% if (record.kia === 'K'){ %>selected
+                            <% } %>
+                    >Yes
+                    </option>
+                    <option value="U" <% if (record.kia === 'U'){ %>selected
+                            <% } %>
+                    >Unspecified
+                  </option>
+                </select>
+        </div>
+        <div id="nodate">
+          <label>Check to ignore unit years when generating nominal roll(s)</label>
+          <input type="checkbox" name="nodate" />
+        </div>
+        <hr>
+        <input class="ajax" type="submit" name="submit" value="<% if (record._id) { %>Update Record<% }
+            else { %>Add Record<% } %>" onclick="return false;" />
+        <% if (!record._id) { %>
+          <input class="ajax" type="submit" name="submit" value="Retrieve Records" onclick="return false;" />
+          <% } %>
+            <input type="button" value="Add or Remove Units" onclick="location.href='/add-military-units';" />
+            <% if (record._id){ %>
+              <input type="button" value="Return to Main Dashboard" onclick="location.href='/nominal-roll';" />
+              <% } %>
+                <% if (!record._id) { %>
+                  <input type="submit" name="submit" value="Generate Roll PDF" />
+                  <!-- hidden field to set action param for processing.
+            Overridden in JS not gen PDF (i.e. submitted with AJAX) -->
+                  <input type="hidden" name="action" value="Generate Roll PDF" />
+                  <% } %>
+                    <!-- re-request main page, to re-populate docs -->
+                    <input type="button" value="Usage & Docs" onclick="location.href='/nominal-roll/?docs=true';" />
+                    <!-- hidden form with record ID for if updating -->
+                    <input type="hidden" name="record_id" value="<% if (record._id){ %> <%= record._id %> <% } else { %>0<% } %>" />
+      </form>
+    </div>
+    <div id="record-display">
+      <div id="record">
+        <div class="error"></div>
+        <h2 class="display-title"></h2>
+        <div id="record-data">
+          <div class="error"></div>
+        </div>
+        <div id="docs">
+          <h2>What does this app do?</h2>
+          <p>The purpose of this app is two-fold:</p>
+          <ol>
+            <li>To store historical service records of military personnel in a database.</li>
+            <li>To facilitate the generation of Nominal Rolls and Rolls of Honour for military units as PDF documents.
+            </li>
+          </ol>
+          <h2>Usage Instructions</h2>
+          <h3>Create a soldier record</h3>
+          <ul>
+            <li>Fill in name fields.</li>
+            <li>Select military units. If more than one, select multiple (e.g. on a desktop PC, hold ctrl & left-click. Mobile & touch screen methods vary according to device).
+            </li>
+            <li>Select "Killed in Action" status. If unknown, select 'Unspecified'.</li>
+            <li>Tap on the "Add Record" button.</li>
+          </ul>
+          <h3>Query a soldier's record</h3>
+          <ul>
+            <li>Enter the name of the soldier. Surname is required, others are optional.</li>
+            <li>Select a unit to narrow the search, or 'Unspecified' to query all units for the specified soldier.
+            </li>
+            <li>Select whether the soldier was killed in action, or 'Unspecified' to disregard this field.</li>
+            <li>Tap on the "Retrieve Records" button.</li>
+          </ul>
+          <h3>Edit a soldier's record</h3>
+          <ul>
+            <li>Query for the soldier's record (as above).</li>
+            <li>Tap on the "Edit Record" link (coloured red). This populates the form with the soldier's existing record data.
+            </li>
+            <li>Amend the data accordingly, then tap the 'Update Record' button.</li>
+            <li>The newly updated record should then be shown in the view pane. Either continue editing, or when done, tap on the 'Return to Main Dashboard' button to conclude the editing process.
+            </li>
+            <li>As a shortcut, you may also delete a unit from a soldier's record directly from the retrieved records view, but tapping on it, then selecting "OK" from the confirmation dialog.
+            </li>
+          </ul>
+          <h3>Delete a soldier's record from the database</h3>
+          <ul>
+            <li>Query for the soldier's record (as above).</li>
+            <li>On the records retrieved view pane, tap on name of the solider you wish to delete, then select "OK" from the confirmation dialog.
+            </li>
+          </ul>
+          <h3>Display records of all soldiers associated with a military unit</h3>
+          <ul>
+            <li>Ensure the name fields are empty.</li>
+            <li>Select the military unit(s) to query. If more than one, select multiple (e.g. on a desktop PC, hold ctrl & left-click. Mobile & touch screen methods vary according to device).
+            </li>
+            <li>Select which "Killed in Action" status to include in the results. Selecting "Unspecified" disregards this field as a search criteria.
+            </li>
+            <li>Tap on the "Retrieve Records" button.</li>
+          </ul>
+          <h3>Add or remove available military units</h3>
+          <ul>
+            <li>Tap on the "Add or Remove Units" button.</li>
+            <li>To delete unit(s), select the military unit(s) to delete. If more than one, select multiple (e.g. on a desktop PC, hold ctrl & left-click. Mobile & touch screen methods vary according to device). Then, tap on the "Remove Selected Unit(s)"
+              button.
+            </li>
+            <li>To add new unit(s), simply enter the name(s) of the unit(s) to add, then tap the "Add Unit(s)" button. You may enter more than one unit at a time by separating unit names with a comma.
+            </li>
+          </ul>
+          <h3>Generate "Nominal Rolls" or "Rolls of Honour" for military units</h3>
+          <ul>
+            <li>This creates Nominal Rolls and/or Rolls of Honour as a downloadable and/or printable PDF document.
+            </li>
+            <li>Select the military unit(s) for which to create a Nominal Rolls or Rolls of Honour. If more than one, select multiple (e.g. on a desktop PC, hold ctrl & left-click. Mobile & touch screen methods vary according to device).
+            </li>
+            <li>Important: Selecting multiple units with different dates but of the same unit name will generate a single nominal roll for the date range between the earliest and latest selected date. E.g. Selecting "1941 | 01 Commando", "1942 | 01 Commando" and "1943 | 01 Commando" would produce a nominal roll for "01 Commando (1941 - 1943)".</li>
+            <li>Select the "Killed in Action" status to specify whether this is a Nominal Roll (listing all soldiers with all "Killed in Action" status), or a Roll of Honour (listing only those KIA). Selecting "No" or "Unspecified" will generate a full Nominal
+              Roll (containing all KIA statuses). Selecting "Yes" will generate a Roll of Honour.
+            </li>
+            <li>Tap on the "Generate Roll PDF" button.</li>
+          </ul>
+          <a id="back-to-top">Back to top</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div id="dev-info">
+      <h3>Development Information</h3>
+      <p>Please note, this is a demo instance of the app.</p>
+      <p>The app is currently in beta status, meaning that development is still very much a 'work in progress'. Please <a href="mailto:productions@aninstance.com">get in touch</a> with bug reports; feature requests; to express an interest in having the app
+        deployed on your own infrastructure; to express an interest in subscribing to use the app as a service; or other feedback.</p>
+      <p>The app is being developed by Dan Bright. It is anticipated that the code will be made freely available (Open Sourced) on Dan's <a href="https://github.com/aninstance" target="_blank">
+                Github account</a> shortly (probably under the GPLv3 license). The app is written in NodeJS, jQuery, and of course the web interface uses HTML5 & CSS3. It uses MongoDB for the database (and requires authenticated access). It is designed
+        to run either on bare-metal or in Docker containers (using docker-compose).</p>
+    </div>
+    <div id="copyright-notice">
+      &copy2017 <a href="https://www.aninstance.com" target="_blank">Aninstance</a>. All Rights Reserved.
+    </div>
+  </div>
+</body>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrety="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="></script>
+<script src="/assets/roll-editor.js"></script>
+
+</html>

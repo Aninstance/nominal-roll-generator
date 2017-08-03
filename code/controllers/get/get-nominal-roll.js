@@ -42,7 +42,7 @@ function respond(res, error, record) {
   NominalRollModels.MilitaryUnits.find({}, null, {
     sort: {
       unit_period: -1,
-      unit_name: -1
+      unit_name: 1
     }
   }, function(err, results) {
     if (err) {

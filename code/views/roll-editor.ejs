@@ -61,7 +61,7 @@
         </div>
         <div id="nodate">
           <label>Check to ignore unit years when generating nominal roll(s)</label>
-          <input type="checkbox" name="nodate"/>
+          <input type="checkbox" name="nodate" />
         </div>
         <hr>
         <input class="ajax" type="submit" name="submit" value="<% if (record._id) { %>Update Record<% }
@@ -158,6 +158,7 @@
             </li>
             <li>Select the military unit(s) for which to create a Nominal Rolls or Rolls of Honour. If more than one, select multiple (e.g. on a desktop PC, hold ctrl & left-click. Mobile & touch screen methods vary according to device).
             </li>
+            <li>Important: Selecting multiple units with different dates but of the same unit name will generate a single nominal roll for the date range between the earliest and latest selected date. E.g. Selecting "1941 | 01 Commando", "1942 | 01 Commando" and "1943 | 01 Commando" would produce a nominal roll for "01 Commando (1941 - 1943)".</li>
             <li>Select the "Killed in Action" status to specify whether this is a Nominal Roll (listing all soldiers with all "Killed in Action" status), or a Roll of Honour (listing only those KIA). Selecting "No" or "Unspecified" will generate a full Nominal
               Roll (containing all KIA statuses). Selecting "Yes" will generate a Roll of Honour.
             </li>
