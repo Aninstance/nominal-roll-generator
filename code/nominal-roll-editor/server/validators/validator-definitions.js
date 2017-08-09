@@ -16,7 +16,7 @@ module.exports = {
       if (value && value instanceof Array) {
         if (value.length > 0) {
           value.forEach(function (item) {
-            if (!XRegExp.test(item, /^[a-zA-Z0-9\- ,.]{1,500}$/) && item !== "") {
+            if (!XRegExp.test(item, /^[a-zA-Z0-9\- ,.]{1,500}$/) && item !== '') {
               valid = false;
             }
           });
@@ -41,9 +41,10 @@ module.exports = {
       // tests whether value is array of SoldierUnit objects
       if (value && Array.isArray(value)) {
         return value.filter(v => {
-          let idTest = XRegExp.test(v.unit._id, /^[a-zA-Z0-9]{1,25}$/);
-          let unitNameTest = XRegExp.test(v.unit.unit_name, /^[a-zA-Z0-9\- _,.+|]{1,25}$/);
+          let idTest = v.unit._id ? XRegExp.test(v.unit._id, /^[a-zA-Z0-9]{1,25}$/): true;  // allow pass (true) if no ID
+          let unitNameTest = XRegExp.test(v.unit.unit_name, /^[a-zA-Z0-9\- _,.+|]{1,150}$/);
           let periodTest = isDateOrEmptyArray(v.unit_period);
+          console.log(idTest, unitNameTest , periodTest);
           return idTest && unitNameTest && periodTest;
         }).length > 0; // return true if all tests true thus filtered has element, else false
       }
@@ -51,6 +52,9 @@ module.exports = {
     },
     isKSU: function (value) {
       return XRegExp.test(value, /^(yes\b)$|^(no\b)$|^(unknown\b)$/i);
+    },
+    isNumber: function (value) {
+      return !isNaN(value);  // validate if a number, return false to fail if not
     },
   },
   customSanitizers: {

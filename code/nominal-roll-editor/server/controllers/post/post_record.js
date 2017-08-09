@@ -1,7 +1,6 @@
 const validations = require('../../validators/validations');
 const NominalRollModels = require('../../models/nominal-roll-models');
 const Response = function (req, res, next) {
-  let err = null;
   // do validations
   req.check(validations.recordSchema);
   req.getValidationResult().then(function (result) {
@@ -12,26 +11,34 @@ const Response = function (req, res, next) {
       NominalRollModels.SoldierRecords.create(req.body, function (err, created) {
         return !!err ?
           respond(res, {
-            data: null, success: false,
+            data: null,
+            success: false,
             error: 'Validation error!',
-            errDetail: err
+            errDetail: err.toString() || null
           }) :
-          respond(res, {data: created, success: true, error: err})
+          respond(res, {
+            data: created,
+            success: true,
+            error: null,
+            errDetail: null
+          })
       });
     }
     else { // failed validation
       return respond(res, {
         data: null,
         success: false,
-        error: 'A validation error!',
-        'errDetail': result.array()
+        error: 'A validation error!!',
+        errDetail: result ? result.array().map(r => r.msg) : null
       });
     }
   }).catch((err) => {
     console.log(err);
     respond(res, {
-      data: null, success: false, error: 'Validation error!',
-      errDetail: err.toString()
+      data: null,
+      success: false,
+      error: 'Validation error!!!',
+      errDetail: err ? err.toString() : null
     });
   });
 };

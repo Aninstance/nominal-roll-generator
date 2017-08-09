@@ -67,6 +67,15 @@ module.exports = {
       isKSU: {
         errorMessage: 'A KIA status is required ("yes", "no", or "unknown").'
       }
+    },
+    'batch': {
+      // in: 'query',
+      optional: {
+        checkFalsy: true, // empty value allowed if query exists
+      },
+      isNumber: {
+        errorMessage: 'The skip parameter needs to be a number!'
+      }
     }
   },
   unitSchema: {
@@ -88,5 +97,14 @@ module.exports = {
         errorMessage: 'This is not a valid unit name. What is your game, Sunny Jim?!'
       }
     },
+    'batch': {
+      // in: 'query',
+      optional: {
+        checkFalsy: true, // empty value allowed if query exists
+      },
+      isNumber: {
+        errorMessage: 'The skip parameter needs to be a number!'
+      }
+    }
   },
 };
