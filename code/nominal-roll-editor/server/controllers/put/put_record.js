@@ -10,6 +10,8 @@ const Response = function (req, res, next) {
       req.sanitizeBody('soldier_units').soldierUnitsStingsToDates();
       req.sanitizeBody('kia').kiaToUpper();
       req.sanitizeBody('soldier_middlenames').capitalize();
+      req.sanitizeBody('soldier_firstname').capitalize();
+      req.sanitizeBody('soldier_surname').capitalize();
       NominalRollModels.SoldierRecords.findByIdAndUpdate(req.params.record_id,
         req.body, {new: true}, function (err, updated) {
           return !!err ?

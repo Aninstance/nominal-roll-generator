@@ -64,7 +64,7 @@ module.exports = {
       if (Array.isArray(value)) {
         value = value.map(n => capitalize(n));
       } else {
-        capitalize(value);
+        value = capitalize(value);
       }
       return value;
     },

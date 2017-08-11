@@ -9,6 +9,8 @@ const Response = function (req, res, next) {
       req.sanitizeBody('soldier_units').soldierUnitsStingsToDates();
       req.sanitizeBody('kia').kiaToUpper();
       req.sanitizeBody('soldier_middlenames').capitalize();
+      req.sanitizeBody('soldier_firstname').capitalize();
+      req.sanitizeBody('soldier_surname').capitalize();
       NominalRollModels.SoldierRecords.create(req.body, function (err, created) {
         return !!err ?
           respond(res, {
