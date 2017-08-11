@@ -6,6 +6,10 @@ const Response = function (req, res, next) {
   req.check(validations.recordSchema);
   req.getValidationResult().then(function (result) {
     if (result.isEmpty()) {
+      // turn json dates into Date objects
+      req.sanitizeBody('soldier_units').soldierUnitsStingsToDates();
+      req.sanitizeBody('kia').kiaToUpper();
+      req.sanitizeBody('soldier_middlenames').capitalize();
       NominalRollModels.SoldierRecords.findByIdAndUpdate(req.params.record_id,
         req.body, {new: true}, function (err, updated) {
           return !!err ?
