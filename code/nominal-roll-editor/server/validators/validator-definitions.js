@@ -3,32 +3,32 @@ const XRegExp = require('xregexp');
 
 module.exports = {
   customValidators: {
-    isAlphaNumericPlusExtras: function (value) {
+    isAlphaNumericPlusExtras: function(value) {
       if (value) {
         // regex matches: alphanum(upper + lower),dash,space,comma,full-stop,(>1, <500).
         return XRegExp.test(value, /^[a-zA-Z0-9- _,.+|]{1,500}$/);
       }
       return true;
     },
-    isAlphaNumericPlusExtrasArray: function (value) {
+    isAlphaNumericPlusExtrasArray: function(value) {
       // n.b. validates empty string (&& item !== "")
       let valid = true;
       if (value && value instanceof Array) {
         if (value.length > 0) {
-          value.forEach(function (item) {
+          value.forEach(function(item) {
             if (!XRegExp.test(item, /^[a-zA-Z0-9\- ,.]{1,500}$/) && item !== '') {
               valid = false;
             }
           });
         }
       }
-      return valid;  // valid if empty or not set false
+      return valid; // valid if empty or not set false
     },
-    isNumOrNullArray: function (value) {
+    isNumOrNullArray: function(value) {
       let valid = true;
       if (value && value instanceof Array) {
         if (value.length > 0) {
-          value.forEach(function (item) {
+          value.forEach(function(item) {
             if (!XRegExp.test(value, /^[0-9, ]{1,55}$/)) {
               valid = false;
             }
@@ -37,39 +37,46 @@ module.exports = {
       }
       return valid; // validate if empty or not set false
     },
-    isSoldierUnitArray: function (value) {
+    isSoldierUnitArray: function(value) {
       // tests whether value is array of SoldierUnit objects
       if (value && Array.isArray(value)) {
         return value.filter(v => {
-          let idTest = v.unit._id ? XRegExp.test(v.unit._id, /^[a-zA-Z0-9]{1,25}$/): true;  // allow pass (true) if no ID
+          let idTest = v.unit._id ? XRegExp.test(v.unit._id, /^[a-zA-Z0-9]{1,25}$/) : true; // allow pass (true) if no ID
           let unitNameTest = XRegExp.test(v.unit.unit_name, /^[a-zA-Z0-9\- _,.+|]{1,150}$/);
           let periodTest = isDateOrEmptyArray(v.unit_period);
-          console.log(idTest, unitNameTest , periodTest);
           return idTest && unitNameTest && periodTest;
         }).length > 0; // return true if all tests true thus filtered has element, else false
       }
       return false; // fail validation if value not array or empty
     },
-    isKSU: function (value) {
+    isKSU: function(value) {
       return XRegExp.test(value, /^(yes\b)$|^(no\b)$|^(unknown\b)$/i);
     },
-    isNumber: function (value) {
-      return !isNaN(value);  // validate if a number, return false to fail if not
+    isNumber: function(value) {
+      return !isNaN(value); // validate if a number, return false to fail if not
     },
   },
   customSanitizers: {
-    upperCase: function (value) {
+    upperCase: function(value) {
       return value ? value.toUpperCase() : '';
     },
-    underscoreToSpace: function (value) {
+    capitalize: function(value) {
+      if (Array.isArray(value)) {
+        value = value.map(n => capitalize(n));
+      } else {
+        capitalize(value);
+      }
+      return value;
+    },
+    underscoreToSpace: function(value) {
       return value ? value.replace('_', ' ').trim().toLowerCase() : '';
     },
-    soldierUnitsStingsToDates: function (value) {
+    soldierUnitsStingsToDates: function(value) {
       /*
        turn date strings(formatted as YYYY-MM-DD) to Date objects (UTC),
        ensuring the array has a max of 2 values (hence the slice)
         */
-      value.forEach(function (v) {
+      value.forEach(function(v) {
         // turn array of date strings into array of Date objects
         v.unit_period = v.unit_period.map(p => new Date(`${p}`)).slice(0, 2);
         // sort array of Date objects in order
@@ -77,7 +84,7 @@ module.exports = {
       });
       return value;
     },
-    kiaToUpper: function (value) {
+    kiaToUpper: function(value) {
       // uppercase value
       return value.toUpperCase();
     }
@@ -95,4 +102,11 @@ function isDateOrEmptyArray(value) {
     return checked.length > 0; // pass true if all values valid date strings, else false
   }
   return false; // fail if value not array or no value
+}
+
+function capitalize(value) {
+  return value
+    .toLowerCase().split(' ').map(
+      (word) => word[0].toUpperCase() + word.substr(1)
+    ).join(' ');
 }

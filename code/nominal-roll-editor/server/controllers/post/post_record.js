@@ -8,6 +8,7 @@ const Response = function (req, res, next) {
       // turn json dates into Date objects
       req.sanitizeBody('soldier_units').soldierUnitsStingsToDates();
       req.sanitizeBody('kia').kiaToUpper();
+      req.sanitizeBody('soldier_middlenames').capitalize();
       NominalRollModels.SoldierRecords.create(req.body, function (err, created) {
         return !!err ?
           respond(res, {
