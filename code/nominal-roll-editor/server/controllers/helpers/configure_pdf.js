@@ -1,52 +1,36 @@
 const helpers = require('./aninstance-helpers');
-module.exports = function(unitList, data, type) {
-  // if multiple identical unit names selected (albeit with different date parts of string), combine
-  unitList = combineIdenticalUnits(unitList);
+const moment = require('moment');
+module.exports = function (rollRequest, records, type) {
   // construct html
+  let unitName = rollRequest.unit_name;
   let rollHtml = {};
-  unitList.forEach(function(unit) {
-    let displayCounter = 0;
-    rollHtml[unit[2]] = `<ul class="unit-record">`;
-    data.forEach(function(record) {
-      let recordSeen = [];
-      record.soldier_units.forEach(function(u) {
-        // ensure iterated soldier isn't presented multiple times due to being present in multiple years for same unit
-        if (!recordSeen.includes(record._id)) {
-          recordSeen.push(record._id);
-          // if iterated soldier_unit contains text of iterated selected unit (which may have had date removed)
-          if (u.includes(unit[2])) {
-            rollHtml[unit[2]] += `<ul>`;
-            let kia = record.kia === 'K' ? 'Yes' : 'No';
-            let serial = record.soldier_serial_number ? record.soldier_serial_number : '';
-            let middlenames = record.soldier_middlenames.join(', ');
-            rollHtml[unit[2]] += `<li>Serial Number: ${serial}</li>`;
-            rollHtml[unit[2]] += `<li>Surname: ${record.soldier_surname}</li>`;
-            rollHtml[unit[2]] += `<li>First Name: ${record.soldier_firstname}</li>`;
-            rollHtml[unit[2]] += `<li>Middle Names: ${middlenames}</li>`;
-            rollHtml[unit[2]] += `<li>Killed In Action: ${kia}</li>`;
-            rollHtml[unit[2]] += '</ul><hr>';
-            // only display 5 records per page  note: record.soldier_units[record.soldier_units.indexOf(u) + 1] === undefined
-            if (displayCounter > 4) {
-              rollHtml[unit[2]] += `<div style="page-break-after:always;"></div>`;
-              displayCounter = 0;
-            } else {
-              displayCounter += 1;
-            }
-          }
-        }
-      });
-    });
-    rollHtml[unit[2]] += `</ul><hr>`;
+  rollHtml = `<ul class="unit-record" style="list-style:none"><li>`;
+  records.forEach(r => {
+    let newRollHtml = `
+    <ul style="page-break-inside:avoid;list-style:none;">
+    <li>Surname: ${r.soldier_surname}</li>
+    <li>First name: ${r.soldier_firstname}</li>
+    <li>Middlename(s): ${r.soldier_middlenames ? r.soldier_middlenames.join(', ') : ''}</li>
+    <li>Service number(s): ${r.soldier_serial_number ? r.soldier_serial_number.join(', ') : ''}</li>
+    <li>Killed in Action: ${r.kia}</li>
+    `;
+    if ('kiaDate' in r && !isNaN(Date.parse(r.kiaDate))) {
+      newRollHtml += `<li>Date KIA: ${moment(r.kiaDate).format("DD MMMM YYYY")}</li>`
+    }
+    newRollHtml += '</ul><br>';
+    return rollHtml += newRollHtml;
   });
+  rollHtml += `</li></ul>`;
 
   let html = ``,
     rollTitle = `Aninstance-Nominal-Roll-Generator`,
-    headerTitle = type === 'ROH' ? 'Roll of Honour' : 'Nominal Roll';
+    headerTitle = type === 'ROH' ? `Roll of Honour` : `Nominal Roll`;
 
-  let styles = {
-    header: 'text-align:center;font-size:28px;font-weight:bold;font-family:monospace;',
-    body: 'font-size:18px;font-family:monospace;',
-    h1: 'font-size:20px;text-align:center;margin:7px07px0;font-family:monospace;',
+  const styles = {
+    header: 'text-align:center;font-size:18px;font-weight:bold;font-family:monospace;',
+    body: 'font-size:12px;font-family:monospace;margin-top:1.5em;',
+    h1: 'font-size:16px;text-align:center;font-family:monospace;',
+    h2: 'font-size:14px;text-align:center;font-family:monospace;',
   };
 
   let options = {
@@ -70,37 +54,17 @@ module.exports = function(unitList, data, type) {
 
   };
 
-  let filename = encodeURIComponent(rollTitle) + '.pdf';
-  unitList.forEach(function(unit) {
-    let yearSpan = unit[0] && unit[1] ? unit[0] !== unit[1] ? `(${unit[0]} - ${unit[1]})` : `${unit[0]}` : '';
-    html += `<div style="${styles.body}">
-                            <h1 style="${styles.h1}">${unit[2]} ${yearSpan}</h1>
-                            ${rollHtml[unit[2]]}
-                            </div>`;
-  });
+  const filename = encodeURIComponent(rollTitle) + '.pdf';
+  const yearSpan = `${moment(rollRequest.periodFrom).format("DD MMMM YYYY")} - ${moment(rollRequest.periodTo).format("DD MMMM YYYY")}`;
+  html += `
+<div style="${styles.body}">
+<h1 style="${styles.h1}">${unitName}</h1>
+<h2 style="${styles.h2}">${yearSpan}</h2>
+${rollHtml}
+</div>`;
   return {
     filename: filename,
     html: html,
     options: options,
   };
 };
-
-function combineIdenticalUnits(unitList) {
-  // function to combine identical selected unit names by removing the date part of string
-  let dateUnitList;
-  let unitsToDisplay;
-  if (unitList instanceof Array) {
-    // switch [ 'date | unit_name', 'date | unit_name' ] to [ [Date, String], [Date, String] ]
-    if (unitList.length > 0) {
-      dateUnitList = helpers.formatToDateAndString(unitList);
-    }
-    // get a array of unique names with date range [[earliest Date selected, latest Date selected, unique unit name]]
-    unitsToDisplay = helpers.getUniqueNamesWithDateRange(dateUnitList);
-  }
-  // convert the dates from the unitsToDisplay list to year
-  unitsToDisplay.forEach(function(u) {
-    u[0] = u[0] !== undefined ? u[0].getFullYear() : null;
-    u[1] = u[1] !== undefined ? u[1].getFullYear() : null;
-  });
-  return unitsToDisplay;
-}

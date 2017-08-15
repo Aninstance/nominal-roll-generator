@@ -7,11 +7,21 @@ const Response = function (req, res, next) {
     if (result.isEmpty()) {
       // turn json dates into Date objects
       req.sanitizeBody('soldier_units').soldierUnitsStingsToDates();
+      // other sanitizations
       req.sanitizeBody('kia').kiaToUpper();
       req.sanitizeBody('soldier_middlenames').capitalize();
       req.sanitizeBody('soldier_firstname').capitalize();
       req.sanitizeBody('soldier_surname').capitalize();
       NominalRollModels.SoldierRecords.create(req.body, function (err, created) {
+        // remove kiaDate value if it was submitted in error when kia 'NO' or 'UNSPECIFIED'
+        if (created && created.kia !== 'YES' && created.kiaDate) {
+          created.kiaDate = undefined;
+          created.save((e, c) => {
+            err = e;
+            created = c;
+            return true;
+          });
+        }
         return !!err ?
           respond(res, {
             data: null,
@@ -26,8 +36,7 @@ const Response = function (req, res, next) {
             errDetail: null
           })
       });
-    }
-    else { // failed validation
+    } else { // failed validation
       return respond(res, {
         data: null,
         success: false,

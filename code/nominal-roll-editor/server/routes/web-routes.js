@@ -17,6 +17,7 @@ router.get('/nominal-roll/units/:unit_id?', bodyParser.urlencoded({extended: tru
   Response(req, res, next);
 });
 
+
 // // POST
 
 router.post('/nominal-roll/units', bodyParser.urlencoded({extended: true}), function (req, res, next) {
@@ -26,6 +27,11 @@ router.post('/nominal-roll/units', bodyParser.urlencoded({extended: true}), func
 
 router.post('/nominal-roll/record', bodyParser.urlencoded({extended: true}), function (req, res, next) {
   const Response = require('../controllers/post/post_record');
+  Response(req, res, next);
+});
+
+router.post('/nominal-roll/roll', bodyParser.urlencoded({extended: true}), function (req, res, next) {
+  const Response = require('../controllers/post/post_roll');
   Response(req, res, next);
 });
 

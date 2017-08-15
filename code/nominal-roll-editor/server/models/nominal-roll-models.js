@@ -24,21 +24,22 @@ const SoldierRecordSchema = new Schema({
     required: [false],
   },
   soldier_units: {
-    type: [
-      {
-        unit:
-          {
-            _id: String,
-            unit_name: String,
-          },
-        unit_period: [Date]
-      }
-    ],
+    type: [{
+      unit: {
+        _id: String,
+        unit_name: String,
+      },
+      unit_period: [Date]
+    }],
     required: [true, 'At least one unit is required']
   },
   kia: {
     type: String,
     required: [true, 'A KIA status is required']
+  },
+  kiaDate: {
+    type: Date,
+    required: [false]
   },
 }).plugin(uniqueValidator);
 
@@ -51,7 +52,6 @@ const UnitSchema = new Schema({
     uniqueCaseInsensitive: true
   }
 }).plugin(uniqueValidator);
-
 
 // create models (these corresponds to collections (like sql tables) in mongodb)
 SoldierRecords = mongoose.model('records', SoldierRecordSchema);

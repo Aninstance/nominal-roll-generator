@@ -1,8 +1,8 @@
 module.exports = {
   /*
-* "in": commenting out 'in' key checks ALL (params, body, query, headers)
-* "optional: {checkFalsy: true}: allows skipping validation if key does exist but has an empty value. Does NOT work with empty arrays (validating these also needs to be handled in validator definitions).
-  */
+   * "in": commenting out 'in' key checks ALL (params, body, query, headers)
+   * "optional: {checkFalsy: true}: allows skipping validation if key does exist but has an empty value. Does NOT work with empty arrays (validating these also needs to be handled in validator definitions).
+   */
 
   recordSchema: {
     'record_id': {
@@ -68,6 +68,15 @@ module.exports = {
         errorMessage: 'A KIA status is required ("yes", "no", or "unknown").'
       }
     },
+    'kiaDate': {
+      // in: 'query',
+      optional: {
+        checkFalsy: true, // empty value allowed if param exists
+      },
+      isDate: {
+        errorMessage: 'The KIA date needs to be a date!'
+      }
+    },
     'batch': {
       // in: 'query',
       optional: {
@@ -90,7 +99,7 @@ module.exports = {
     },
     'unit_name': {
       // in: 'query',
-       optional: {
+      optional: {
         checkFalsy: true, // empty value allowed if param exists
       },
       isAlphaNumericPlusExtras: {
@@ -104,6 +113,53 @@ module.exports = {
       },
       isNumber: {
         errorMessage: 'The skip parameter needs to be a number!'
+      }
+    }
+  },
+  rollSchema: {
+    '_id': {
+      // in: 'params',
+      optional: {
+        checkFalsy: false, // empty value disallowed if param exists
+      },
+      isAlphaNumericPlusExtras: {
+        errorMessage: 'This is not a valid unit ID. What is your game, Sunny Jim?!'
+      }
+    },
+    'unit_name': {
+      // in: 'query',
+      optional: {
+        checkFalsy: true, // empty value allowed if param exists
+      },
+      isAlphaNumericPlusExtras: {
+        errorMessage: 'This is not a valid unit name. What is your game, Sunny Jim?!'
+      }
+    },
+    'periodFrom': {
+      // in: 'query',
+      optional: {
+        checkFalsy: false, // empty value disallowed if query exists
+      },
+      isDate: {
+        errorMessage: 'The periodFrom field needs to be a date!'
+      }
+    },
+    'periodTo': {
+      // in: 'query',
+      optional: {
+        checkFalsy: false, // empty value disallowed if query exists
+      },
+      isDate: {
+        errorMessage: 'The periodTo field needs to be a date!'
+      }
+    },
+    'type': {
+      // in: 'query',
+      optional: {
+        checkFalsy: false, // empty value disallowed if query exists
+      },
+      isRollType: {
+        errorMessage: 'Roll type is invalid!'
       }
     }
   },
