@@ -163,4 +163,72 @@ module.exports = {
       }
     }
   },
+  userSchema: {
+    'fullName': {
+      // in: 'params',
+      optional: {
+        checkFalsy: false, // empty value allowed if param exists
+      },
+      isAlphaNumericPlusExtras: {
+        errorMessage: 'This is not a name. What is your game, Sunny Jim?!'
+      }
+    },
+    'email': {
+      // in: 'query',
+      notEmpty: true,
+      optional: {
+        checkFalsy: false, // empty value allowed if param exists
+      },
+      isEmail: {
+        errorMessage: 'This is not a valid email. What is your game, Sunny Jim?!'
+      }
+    },
+    'password': {
+      // in: 'query',
+      notEmpty: true,
+      optional: {
+        checkFalsy: false, // empty value allowed if query exists
+      },
+      isAcceptablePassword: {
+        errorMessage: 'This is not an acceptable password. What is your game, Sunny Jim?!'
+      }
+    },
+    'role': {
+      // in: 'query',
+      notEmpty: true,
+      optional: {
+        checkFalsy: false, // empty value allowed if query exists
+      },
+      isAlphaNumericPlusExtrasArray: {
+        errorMessage: 'This is not an acceptable role. What is your game, Sunny Jim?!'
+      }
+    },
+    'tokenCounter': {
+      optional: {
+        checkFalsy: false, // empty value allowed if query exists
+      },
+      isNumber: {
+        errorMessage: 'A counter is generally represented by a number!'
+      }
+    },
+    'revokedTokens': {
+      optional: {
+        checkFalsy: false, // empty value allowed if query exists
+      },
+      isTokenArray: {
+        errorMessage: 'This is not a valid token string array! What are you trying to pull?!'
+      }
+    }
+  },
+  admistrationSchema: {
+    'dummy': {
+      // in: 'params',
+      optional: {
+        checkFalsy: false, // empty value allowed if param exists
+      },
+      isAlphaNumericPlusExtras: {
+        errorMessage: 'This is not a dummy. What is your game, Sunny Jim?!'
+      }
+    }
+  },
 };

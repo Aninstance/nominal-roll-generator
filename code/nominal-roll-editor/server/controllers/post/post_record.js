@@ -8,7 +8,7 @@ const Response = function (req, res, next) {
       // turn json dates into Date objects
       req.sanitizeBody('soldier_units').soldierUnitsStingsToDates();
       // other sanitizations
-      req.sanitizeBody('kia').kiaToUpper();
+      req.sanitizeBody('kia').upperCase();
       req.sanitizeBody('soldier_middlenames').capitalize();
       req.sanitizeBody('soldier_firstname').capitalize();
       req.sanitizeBody('soldier_surname').capitalize();

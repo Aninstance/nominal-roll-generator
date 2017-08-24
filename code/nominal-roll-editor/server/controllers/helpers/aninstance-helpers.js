@@ -5,7 +5,7 @@ const XRegExp = require('xregexp');
 
 module.exports = {
 
-  flattenArray: function(arr) {
+  flattenArray: function (arr) {
     if (Array.isArray(arr)) {
       // function to flatten multiple arrays to one
       var cleaned = this.removeUndefinedValues(arr);
@@ -15,7 +15,7 @@ module.exports = {
     return false;
   },
 
-  removeDuplicates: function(arr) {
+  removeDuplicates: function (arr) {
     if (Array.isArray(arr)) {
       // function to remove duplicates from an array
       var uniqueList = [];
@@ -24,16 +24,16 @@ module.exports = {
     }
     return false;
   },
-  
-  removeUndefinedValues: function(arr) {
+
+  removeUndefinedValues: function (arr) {
     if (Array.isArray(arr)) {
       // function to remove 'undefined' values from array
-      return arr.filter(item => typeof(item) !== 'undefined');
+      return arr.filter(item => typeof (item) !== 'undefined');
     }
     return false;
   },
 
-  uniqueListFromObjPropLists: function(objs, objectProp) {
+  uniqueListFromObjPropLists: function (objs, objectProp) {
     /* returns single array of unique values for an object property (objectProp)
      that exists within an array of objects (objs)
      */
@@ -45,10 +45,20 @@ module.exports = {
     }
     return false;
   },
-  removeDatesFromStrings: function(unitArray) {
+
+  removeDatesFromStrings: function (unitArray) {
     if (unitArray.length) {
       newArray = unitArray.map(e => e.replace(/[0-9]{4}|-{2}|\|/g, '').trim());
     }
     return newArray.length ? newArray : false;
   },
+
+  /**
+   * @description determine values present in two different arrays.
+   * @param {array} arr1 first array.
+   * @param {array} arr2 second array.
+   * @return {array} new array containing only values present in arr1 & arr1, or empyty array if no matching values or params were not arrays
+   */
+  arrayIntersect: (arr1, arr2) => Array.isArray(arr1) && Array.isArray(arr2) ? arr1.filter(e => arr2.indexOf(e) > -1) : []
+
 };

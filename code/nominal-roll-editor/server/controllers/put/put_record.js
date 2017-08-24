@@ -8,7 +8,7 @@ const Response = function (req, res, next) {
     if (result.isEmpty()) {
       // turn json dates into Date objects
       req.sanitizeBody('soldier_units').soldierUnitsStingsToDates();
-      req.sanitizeBody('kia').kiaToUpper();
+      req.sanitizeBody('kia').upperCase();
       req.sanitizeBody('soldier_middlenames').capitalize();
       req.sanitizeBody('soldier_firstname').capitalize();
       req.sanitizeBody('soldier_surname').capitalize();
@@ -45,11 +45,14 @@ const Response = function (req, res, next) {
         error: result.array()[0].msg
       });
     }
-  }).catch((err) => respond(res, {
-    data: null,
-    success: false,
-    error: err
-  }));
+  }).catch((err) => {
+    console.log(err)
+    respond(res, {
+      data: null,
+      success: false,
+      error: err
+    })
+  });
 
   function respond(res, jsonToReturn) {
     return res.status(jsonToReturn.error === null ? 200 : 422).json(jsonToReturn);

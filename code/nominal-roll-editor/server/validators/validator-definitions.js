@@ -3,6 +3,13 @@ const XRegExp = require('xregexp');
 
 module.exports = {
   customValidators: {
+    isAlphaNumeric: function (value) {
+      if (value) {
+        // regex matches: alphanum(upper + lower)
+        return XRegExp.test(value, /^[a-zA-Z0-9]{1,500}$/);
+      }
+      return true;
+    },
     isAlphaNumericPlusExtras: function (value) {
       if (value) {
         // regex matches: alphanum(upper + lower),dash,space,comma,full-stop,(>1, <500).
@@ -22,7 +29,21 @@ module.exports = {
           });
         }
       }
-      return valid; // valid if empty or not set false
+      return valid; // valid if empty or not set
+    },
+    isTokenArray: function (value) {
+      // n.b. validates empty string (&& item !== "")
+      let valid = true;
+      if (value && value instanceof Array) {
+        if (value.length > 0) {
+          value.forEach(function (item) {
+            if (!XRegExp.test(item, /^[a-zA-Z0-9\.]{1,500}$/) && item !== '') {
+              valid = false;
+            }
+          });
+        }
+      }
+      return valid; // valid if empty or not set
     },
     isNumOrNullArray: function (value) {
       let valid = true;
@@ -35,7 +56,7 @@ module.exports = {
           });
         }
       }
-      return valid; // validate if empty or not set false
+      return valid; // validate if empty or not set
     },
     isSoldierUnitArray: function (value) {
       // tests whether value is array of SoldierUnit objects
@@ -66,13 +87,19 @@ module.exports = {
         return XRegExp.test(value, /^(ROH\b)$|^(NOM\b)$/i);
       }
       return false; // fail if empty
-    }
+    },
+    isAcceptablePassword: function (value) {
+      if (value) {
+        // regex matches: alphanum(upper + lower),dash,space,comma,full-stop,(>1, <500).
+        return XRegExp.test(value, /^[a-zA-Z0-9\-\_\,\.\+\|*\!\@\#\$\%\^\&\=|+\;\"\<\>]{1,500}$/);
+      }
+      return true;
+    },
   },
   customSanitizers: {
-    upperCase: function (value) {
-      return value ? value.toUpperCase() : '';
-    },
-    capitalize: function (value) {
+    upperCase: (value) => value ? value.toUpperCase() : '',
+    lowerCase: (value) => value ? value.toLowerCase() : '',
+    capitalize: (value) => {
       if (Array.isArray(value)) {
         value = value.map(n => capitalize(n));
       } else {
@@ -80,25 +107,21 @@ module.exports = {
       }
       return value;
     },
-    underscoreToSpace: function (value) {
+    underscoreToSpace: (value) => {
       return value ? value.replace('_', ' ').trim().toLowerCase() : '';
     },
-    soldierUnitsStingsToDates: function (value) {
+    soldierUnitsStingsToDates: (value) => {
       /*
        turn date strings(formatted as YYYY-MM-DD) to Date objects (UTC),
        ensuring the array has a max of 2 values (hence the slice)
         */
-      value.forEach(function (v) {
+      value.forEach((v) => {
         // turn array of date strings into array of Date objects
         v.unit_period = v.unit_period.map(p => new Date(`${p}`)).slice(0, 2);
         // sort array of Date objects in order
         v.unit_period.sort((a, b) => a - b);
       });
       return value;
-    },
-    kiaToUpper: function (value) {
-      // uppercase value
-      return value.toUpperCase();
     }
   }
 };

@@ -6,44 +6,48 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   path = require('path'),
   http = require('http'),
-  cors = require('cors');  // for cross-origin resource sharing
+  cors = require('cors'), // for cross-origin resource sharing
+  authenticate = require('./server/custom_middleware/authentication'),
+  authorise = require('./server/routes/authorisation');
 
-// // MIDDLEWARE // //
-
-// point static path to dist to serve angular frontend
+// static path
 app.use(express.static(path.join(__dirname, 'static')));
-app.use(cors());  // allow cross-origin sharing of resource
 
-/*
- Set our API routes - FURTHER ROUTING AND RESPONSES FROM HERE WILL BE HANDLED BY SERVER-SIDE NODEJS
- */
+// allow cross-origin sharing of resource
+app.use(cors());
 
-app.use(bodyParser.urlencoded({extended: false}));
+// body parser middleware
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(bodyParser.json());
+
 // content filter - must be immediately after any of the bodyParser middleware!
 app.use(expressValidator(validatorDefinitions));
 
-// error handling middleware
-// note: as well as adding middleware from package (as routes, etc), can create own - e.g. here, for error handling. All middleware needs to handle requests (req), response (res) and next middleware - in case there is any to add to the chain, (next)
-app.use(function (err, req, res, next) {
-  console.log(`An error has occurred: ${err}`);
+// AUTHENTICATION (middleware)
+app.use(authenticate);
+
+// AUTHORISATION (middleware)
+app.use(authorise); // run all route requests through authorization testing
+
+// ERROR HANDLING (middleware)
+app.use((err, req, res, next) => {
+  console.log(`EXPRESS ERROR HAS OCCURRED: ${err}`);
   return res.status(500).json([{
     error: `${err}`
   }]);
 });
 
-app.use('/api', api); // '/' is path, resources defined in web-routes.js
+// path to api
+app.use('/api', api);
 
+// Catch all other non-api routes and return the index file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/server/static/index.html'));
+});
 
-/*
- Catch all other routes and return the index file - FURTHER ROUTING AND RESPONSES FROM HERE WILL BE HANDLED BY CLIENT-SIDE ANGULAR
- */
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'dist/index.html'));
-// });
-
-// // END OF MIDDLEWARE // //
+/* SERVER */
 
 // Get port from environment and store in Express.
 const port = process.env.PORT || '3000';
