@@ -1,7 +1,7 @@
 {
   "name": "frontend-nominal-rolls",
-  "version": "0.0.0",
-  "license": "MIT",
+  "version": "0.9.1",
+  "license": "GPLv3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
