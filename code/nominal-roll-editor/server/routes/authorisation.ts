@@ -4,13 +4,13 @@ import { RequestPlusUserInfo } from '../custom_middleware/request-definitions';
 const router = Router();
 const helpers = require('../controllers/helpers/aninstance-helpers');
 
-const role = {
+const role = Object.freeze({
   superstoat: 'superstoat',
   admin: 'admin',
   user: 'user'
-};
+});
 
-const _restrictedRoutes = {
+const _restrictedRoutes = Object.freeze({
   get: [{
     url: '/api/administration',
     allowedRoles: [role.superstoat]
@@ -50,7 +50,7 @@ const _restrictedRoutes = {
     allowedRoles: [role.superstoat]
   },
   ]
-}
+});
 
 const respond = (res, jsonToReturn) => {
   return res.status(jsonToReturn.error === null ? 200 : 401).json(jsonToReturn);
