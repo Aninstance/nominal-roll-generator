@@ -8,13 +8,11 @@ A web based app designed to store personnel records and generate nominal rolls i
 Demo
 ======================
 
-A working demo is available at: https://rolls.sasoriginals.com
+A working demo is available at: https://api.sasoriginals.com/api
 
 The server component of a web based app designed to store personnel records and generate nominal rolls in PDF format for historical military units.
 
-Designed to serve data via a RESTful API. A frontend written in Angular is available here:
-
-https://github.com/Aninstance/nominal-roll-generator-frontend
+Designed to serve data via a RESTful API.
 
 The Nominal Roll Generator provides following features:
 
