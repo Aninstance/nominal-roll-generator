@@ -1,5 +1,7 @@
 # Nominal Roll Generator
 
+***NOTE: This project is now unmaintained. It shoulda NOT be used without first upgrading the dependencies to the lastest versions, in order to patch security vulnerabilities.
+
 The server component of a web based app designed to store personnel records and generate nominal rolls in PDF format for historical military units.
 
 A working demo of the api is available here: https://api.sasoriginals.com/api
