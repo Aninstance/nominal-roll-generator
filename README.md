@@ -1,6 +1,6 @@
 # Nominal Roll Generator
 
-***NOTE: This project is now unmaintained. It should NOT be used without first upgrading the dependencies to the lastest versions, in order to patch security vulnerabilities.
+__NOTE: This project is now unmaintained. It should NOT be used without first upgrading the dependencies to the lastest versions, in order to patch security vulnerabilities.__
 
 The server component of a web based app designed to store personnel records and generate nominal rolls in PDF format for historical military units.
 
